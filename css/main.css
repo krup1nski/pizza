@@ -1,0 +1,185 @@
+
+html, body{
+    height: 100%;
+}
+
+/*.lilita-one-regular {*/
+/*    font-family: "Lilita One", serif;*/
+/*    font-weight: 400;*/
+/*    font-style: normal;*/
+/*}*/
+
+
+body{
+    background-color: #ffffff;
+    min-width: 320px;
+    font-size: 14px;
+    font-family: "Roboto", serif;
+    font-weight: 400;
+    font-style: normal;
+}
+
+img{
+    max-width:100%;
+    height: auto;
+    text-align: center;
+}
+
+.row>* {
+    padding-left: 0;
+}
+
+@media (min-width: 992px) {
+    .col-md-10 {
+        width: 41.66666667%;
+    }
+}
+@media (min-width: 992px) {
+    .col-md-14 {
+        width: 58.33333333%;
+    }
+}
+
+
+
+ /*--------------------------header-----------------------*/
+
+header{
+    background-image: url("https://pzz.by/assets/img/nhd/header-bg2.gif");
+    color: #efefef;
+    font-size: 26px;
+    margin: 0;
+    padding: 0;
+}
+
+.logo{
+    margin-right: 20px;
+    font-size: 40px;
+
+}
+
+.white{
+    color: #efefef;
+}
+
+.nav li a{
+    color: #efefef;
+    text-decoration: none;
+    gap: 10px
+}
+
+.nav{
+    gap: 10px
+}
+
+.header{
+    align-items: center;
+}
+
+.small{
+    font-size: 16px;
+}
+
+.telnubmer a {
+    color: #efefef;
+    text-decoration: none;
+    font-size: 40px;
+}
+.telnubmer{
+    margin-right: 100px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.btn-cart{
+    border: none;
+    background: none;
+    color: #efefef;
+    padding-bottom: 10px;
+}
+
+/*--------------------------- item ------------------------*/
+
+.itemWrapper{
+    border-radius: 20px;
+    box-shadow: 0px 0px 27px -6px rgba(34, 60, 80, 0.12);
+    max-width: 280px;
+}
+
+.item_img{
+    max-width: 230px;
+}
+
+.item_title, .item_price{
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.gray{
+    color: #717176;
+    font-size: 12px;
+}
+
+.btn-gray{
+    background-color: #f0f1f6;
+    padding: 5px 10px;
+    border-radius: 15px;
+    font-size: 14px;
+}
+
+.btn-gray50{
+    background-color: #f0f1f6;
+    padding: 5px 10px;
+    border-radius: 50%;
+    font-size: 14px;
+}
+
+.btn-gray:hover, .btn-gray:focus {
+    color: #23527c;
+}
+
+
+/*--------------------------- offcanvas ------------------------*/
+
+.offcanvas{
+    background-color: #f7f7f7;
+}
+.product-in-cart{
+    background-color: #ffffff;
+    font-size: 12px;
+    justify-content: space-around;
+    margin-top: 10px;
+    padding: 10px;
+    border-radius: 15px;
+    box-shadow: 0px 0px 27px -6px rgba(34, 60, 80, 0.12);
+}
+.product-in-cart__img{
+    max-width: 100px;
+}
+.product-in-cart__details{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+.details-name, .details-price{
+    font-size: 14px;
+    font-weight: bold;
+}
+
+/*--------------------------- VIEW PRODUCT ------------------------*/
+.additives{
+    display: flex;
+    flex-wrap: wrap;
+}
+.add{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-evenly;
+    border: solid #f9f9f9;
+    border-radius: 10px;
+}
+.add_content{
+    justify-content: space-between;
+}
