@@ -1,4 +1,5 @@
-<?php include "php/db.php" ?>
+<?php include "php/db.php";
+?>
 <!doctype html>
 <html lang="en">
 <head>
@@ -58,11 +59,38 @@
 
 <div class="main">
     <div class="container">
+        <div class="filter">
+            <div class="filter-ttl">
+                Pizza
+            </div>
+            <div class="filter-choose">
+                <form action="index.php" method="post">
+                    <label for="sort_by">Сортировать по:</label>
+                    <select class="form-select" name="sort_by" id="sort_by">
+                        <option value="popularity" <?php if(isset($_POST['sort_by']) && $_POST['sort_by'] == 'popularity'): ?> selected <?php endif; ?> >Популярность</option>
+                        <option value="name" <?php if(isset($_POST['sort_by']) && $_POST['sort_by'] == 'name'): ?> selected <?php endif; ?> >По названию</option>
+                        <option value="desc_price" <?php if(isset($_POST['sort_by']) && $_POST['sort_by'] == 'desc_price'): ?> selected <?php endif; ?> >Цена по убыванию</option>
+                        <option value="asc_price" <?php if(isset($_POST['sort_by']) && $_POST['sort_by'] == 'asc_price'): ?> selected <?php endif; ?> >Цена по возрастанию</option>
+                    </select>
+
+                    <button type="submit" class="btn btn-outline-warning" name="send_form_indx">
+                        <i class="fa-solid fa-check"></i> Применить
+                    </button>
+                </form>
+
+            </div>
+        </div>
         <div class="row">
             <div class="goods col-12 d-flex flex-wrap">
 
+                <?php
+                if (isset($_POST['sort_by'])) {
+                    $all_pizzas = select_all_filter("pizzas", $_POST['sort_by']);
+                } else {
+                    $all_pizzas = select_all("pizzas");
+                }
+                ?>
 
-                <?php $all_pizzas = select_all("pizzas")?>
                 <!--вывод всех товаров из таблицы pizzas-->
                 <?php foreach ($all_pizzas as $pizza): ?>
                 <div class="item itemWrapper m-3" data-id="<?=$pizza['id']?>" style="width: 18rem;">

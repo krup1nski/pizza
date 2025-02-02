@@ -163,7 +163,7 @@ include "php/db.php";
                                    <div class="add_counter">
                                        <div class="plus-minus ms-3 mt-2">
                                            <span class="minus-item btn-gray50" data-action="minus">-</span>
-                                           <span class="pizza-count"  data-counter>1</span>
+                                           <span class="pizza-count"  data-counter>0</span>
                                            <span class="plus-item btn-gray50" data-action="plus">+</span>
                                        </div>
                                    </div>

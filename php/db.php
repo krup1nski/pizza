@@ -20,6 +20,29 @@ function select_all($table){
     return $stmt;
 }
 
+function select_all_filter($table, $filter) {
+    global $pdo;
+
+    // Проверяем допустимые значения сортировки, чтобы избежать SQL-инъекций
+    $allowedFilters = [
+        "name" => "ORDER BY name",
+        "asc_price" => "ORDER BY price ASC",
+        "desc_price" => "ORDER BY price DESC"
+    ];
+
+    $sql = "SELECT * FROM `$table`";
+
+    // Добавляем сортировку, если передан корректный фильтр
+    if (array_key_exists($filter, $allowedFilters)) {
+        $sql .= " " . $allowedFilters[$filter];
+    }
+
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute();
+    return $stmt;
+}
+
+
 function select_one($table, $id){
     global $pdo;
     $sql = "SELECT * FROM $table WHERE id=:id";
