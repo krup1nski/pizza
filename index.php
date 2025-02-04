@@ -46,10 +46,18 @@
                         <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
                     </div>
                     <div class="offcanvas-body">
-                        <div class="cart-wrapper">
+                            <input type="hidden" name="cart_data" id="cart_data">
 
-                        </div>
-                        <div class="total-price">0</div>
+                            <div class="cart-wrapper">
+                                <!-- There are goods in cart -->
+                            </div>
+
+                            <div class="total-price">0</div>
+
+                            <div class="btn-order">
+                                <a href="order.php">Place an order</a>
+                            </div>
+
                     </div>
                 </div>
             </div>
@@ -174,6 +182,7 @@
         </div>
     </div>
 </div>
+
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 <script src="./js/cart-01.js"> </script>

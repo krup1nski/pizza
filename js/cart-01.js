@@ -11,7 +11,7 @@ window.addEventListener("click", function (event) {
             imgSrc: item.querySelector('.item_img').getAttribute('src'),
             title: item.querySelector('.item_title').innerText,
 
-            size: item.querySelector('input[name="pizzaSize-id-'+item.dataset.id+'"]:checked')?.nextElementSibling.innerText || "Not selected",
+            size: item.querySelector('input[name="pizzaSize-id-' + item.dataset.id + '"]:checked')?.nextElementSibling.innerText || "Not selected",
             dough: item.querySelector('input[name="pizzaDough-id-' + item.dataset.id + '"]:checked')?.nextElementSibling.innerText || "Not selected",
             side: item.querySelector('input[name="pizzaSide-id-' + item.dataset.id + '"]:checked')?.nextElementSibling.innerText || "Not selected",
 
@@ -140,7 +140,16 @@ function saveCart() {
     });
 
     localStorage.setItem("cart", JSON.stringify(cartItems));
+
+    // Проверяем, существует ли элемент cart_data
+    const cartInput = document.getElementById("cart_data");
+    if (cartInput) {
+        cartInput.value = JSON.stringify(cartItems);
+    } else {
+        console.error("Ошибка: не найден элемент с id 'cart_data'");
+    }
 }
+
 
 // загрузка корзины из localstorage
 function loadCart() {
@@ -216,3 +225,30 @@ window.addEventListener('click', function (event) {
 
 
 window.addEventListener("DOMContentLoaded", loadCart);
+
+
+document.getElementById("order-form").addEventListener("submit", function (e) {
+    e.preventDefault(); // Отменяем стандартную отправку формы
+
+    // Получаем данные из формы
+    let formData = new FormData(this);
+
+    // Добавляем корзину в форму
+    formData.append("cart_data", localStorage.getItem("cart"));
+
+    // Отправляем данные на сервер через AJAX
+    fetch("order.php", {
+        method: "POST",
+        body: formData,
+    })
+        .then(response => response.json()) // Убедитесь, что парсите JSON
+        .then(data => {
+            if (data.success) {
+                alert("Заказ успешно оформлен!");
+            } else {
+                alert("Ошибка: " + data.message);
+            }
+        })
+        .catch(error => console.error("Ошибка запроса:", error));
+
+});
