@@ -45,7 +45,8 @@ img{
  /*--------------------------header-----------------------*/
 
 header{
-    background-image: url("https://pzz.by/assets/img/nhd/header-bg2.gif");
+    /*background-image: url("https://pzz.by/assets/img/nhd/header-bg2.gif");*/
+    background-color: #ff7300;
     color: #efefef;
     font-size: 26px;
     margin: 0;

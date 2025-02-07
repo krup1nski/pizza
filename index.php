@@ -61,6 +61,32 @@
                     </div>
                 </div>
             </div>
+
+            <li class="ms-2 nav-item dropdown" style="list-style-type: none;">
+                <?php if(isset($_SESSION['id'])):?>
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <?=$_SESSION['name']?><i class="fa fa-user" aria-hidden="true"></i>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="nav-link" href="orders.php">Orders</a></li>
+                        <?php if($_SESSION['id'] == 1):?>
+                            <li><a class="dropdown-item" href="admin/dashboard.php">Admin board</a></li>
+                        <?php endif;?>
+                        <li><a class="dropdown-item" href="logout.php">Logout</a></li>
+                    </ul>
+
+                <?php else:?>
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fa fa-user" aria-hidden="true"></i>
+                    </a>
+
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="login.php">Login</a></li>
+                        <li><a class="dropdown-item" href="registration.php">Registration</a></li>
+                    </ul>
+                <?php endif;?>
+            </li>
+
         </div>
 </header>
 
@@ -171,7 +197,7 @@
                     </div>
 
                     <div class="item-choose__incart me-3 mb-3">
-                        <button data-cart type="button" class="btn btn-warning"><i class="fa-solid fa-cart-shopping"></i></button>
+                        <button data-cart type="button" class="btn btn-warning">add</button>
                     </div>
                     </div>
             </div>

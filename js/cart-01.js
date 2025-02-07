@@ -5,6 +5,8 @@ window.addEventListener("click", function (event) {
     if (event.target.hasAttribute("data-cart")) {
         const item = event.target.closest('.item');
 
+        console.log(item);
+
         // Сохранение товара в переменную
         const productInfo = {
             id: item.dataset.id,
