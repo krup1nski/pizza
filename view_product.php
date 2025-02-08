@@ -16,46 +16,7 @@ include "php/db.php";
 </head>
 <body>
 
-<header class="border-bottom">
-    <div class="container">
-        <div class="d-flex header">
-            <div class="logo">
-                <a href="index.php">LOGO</a>
-               </div>
-
-            <ul class="nav flex-grow-1">
-                <li class="white"><a href="#">pizza</a></li>
-                <li><a href="#">burgers</a></li>
-                <li><a href="#">snacks</a></li>
-            </ul>
-
-
-            <div class="telnubmer">
-                <div class="small">a1 mts life</div>
-                <a href="tel:+123-45-67">123-45-67</a>
-            </div>
-
-
-            <div class="text-end">
-                <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample">
-                    cart
-                </button>
-
-                <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
-                    <div class="offcanvas-header">
-                        Cart
-                        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-                    </div>
-                    <div class="offcanvas-body">
-                        <div class="cart-wrapper">
-
-                        </div>
-                        <div class="total-price">0</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-</header>
+<?php include 'header.php'; ?>
 
 <?php $pizza= select_one("pizzas", $_GET['id'])?>
 

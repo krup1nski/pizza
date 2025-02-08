@@ -1,11 +1,8 @@
 <?php include "php/db.php";
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    // Убираем недопустимые символы
-    $name = filter_var($_POST['name'], FILTER_SANITIZE_STRING);
     $phone = filter_var($_POST['phone'], FILTER_SANITIZE_STRING);
     $password = $_POST['password'];
-    $password2 = $_POST['password2'];
 
     global $pdo;
 
@@ -14,39 +11,18 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 //        die("Ошибка: пароль должен содержать минимум 6 символов, включая хотя бы одну букву и одну цифру.");
 //    }
 
-    // Проверим, есть ли телефон в базе
     $select_user = $pdo->prepare("SELECT * FROM users WHERE phone = :phone");
     $select_user->bindParam(":phone", $phone);
     $select_user->execute();
+    $row = $select_user->fetch(PDO::FETCH_ASSOC);
 
     if ($select_user->rowCount() > 0) {
-        $message[] = "Phone number already exists";
-    } else {
-        if ($password !== $password2) {
-            $message[] = "Passwords do not match";
-        } else {
-            // Хешируем пароль перед сохранением в БД
-            $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-
-            // Добавляем пользователя в базу
-            $insert_user = $pdo->prepare("INSERT INTO users (name, phone, password) VALUES (:name, :phone, :password)");
-            $insert_user->bindParam(":name", $name);
-            $insert_user->bindParam(":phone", $phone);
-            $insert_user->bindParam(":password", $hashed_password);
-            $insert_user->execute();
-
-            // Получаем пользователя после добавления
-            $select_user = $pdo->prepare("SELECT * FROM users WHERE phone = :phone");
-            $select_user->bindParam(":phone", $phone);
-            $select_user->execute();
-            $row = $select_user->fetch(PDO::FETCH_ASSOC);
-
-            if ($select_user->rowCount() > 0) {
-                $_SESSION["id"] = $row['id'];
-                $_SESSION["name"] = $row['name'];
-                $_SESSION["phone"] = $row['phone'];
-            }
-        }
+        $_SESSION["id"] = $row['id'];
+        $_SESSION["name"] = $row['name'];
+        $_SESSION["phone"] = $row['phone'];
+        header("location: index.php");
+    }else{
+        $message = "Invalid phone number or password";
     }
 }
 
@@ -71,20 +47,18 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
 <?php include 'header.php'; ?>
 
-
+<?php
+if (isset($message)){
+echo $message;
+}
+?>
 <div class="main">
     <div class="container">
         <div class="row">
             <div class="col-12 text-center mt-5">
                 <div class="mb-5">Registration</div>
                 <div class="reg-log-form">
-                    <form method="post" action="registration.php">
-                        <div class="row mb-3">
-                            <label for="inputName3" class="col-sm-2 col-form-label">Name <sup>*</sup> </label>
-                            <div class="col-sm-10">
-                                <input type="text" class="form-control" id="inputName3" required name="name">
-                            </div>
-                        </div>
+                    <form method="post" action="login.php">
                         <div class="row mb-3">
                             <label for="inputPhone" class="col-sm-2 col-form-label">Phone number <sup>*</sup> </label>
                             <div class="col-sm-10">
@@ -95,12 +69,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                             <label for="inputPassword" class="col-sm-2 col-form-label">Password <sup>*</sup> </label>
                             <div class="col-sm-10">
                                 <input type="password" class="form-control" id="inputPassword" required name="password">
-                            </div>
-                        </div>
-                        <div class="row mb-3">
-                            <label for="inputPassword2" class="col-sm-2 col-form-label">Confirm Password <sup>*</sup> </label>
-                            <div class="col-sm-10">
-                                <input type="password" class="form-control" id="inputPassword2" required name="password2">
                             </div>
                         </div>
                         <button type="submit" class="btn btn-primary">Sign in</button>

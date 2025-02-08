@@ -59,25 +59,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
 
 
-<header class="border-bottom">
-    <div class="container">
-        <div class="d-flex header">
-            <div class="logo">
-                <a href="index.php">LOGO</a></div>
-
-            <ul class="nav flex-grow-1">
-                <li class="white"><a href="#">pizza</a></li>
-                <li><a href="#">burgers</a></li>
-                <li><a href="#">snacks</a></li>
-            </ul>
-
-
-            <div class="telnubmer">
-                <div class="small">a1 mts life</div>
-                <a href="tel:+123-45-67">123-45-67</a>
-            </div>
-        </div>
-</header>
+<?php include 'header.php'; ?>
 
 
 <div class="main">
