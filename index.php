@@ -1,5 +1,4 @@
 <?php include "php/db.php";
-tt($_SESSION);
 ?>
 <!doctype html>
 <html lang="en">

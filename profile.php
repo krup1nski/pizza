@@ -79,7 +79,37 @@ if (isset($message)){
 
             </div>
             <div class="profile_info col-md-8">
-                <!-- Additional Profile Info Goes Here -->
+
+                <?php $orders = select_orders($_SESSION['phone'])?>
+
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th scope="col">№ заказа</th>
+                        <th scope="col">name</th>
+                        <th scope="col">description</th>
+                        <th scope="col">count</th>
+                        <th scope="col">date</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+
+                    <?php foreach ($orders as $order):?>
+                    <tr>
+                        <th scope="row"><?=$order['order_id']?></th>
+                        <td><?=$order['title']?></td>
+                        <td>Size: <?=$order['size']?>
+                            Dough: <?=$order['dough']?>
+                            Side: <?=$order['side']?>
+                            Price: <?=$order['price']?>
+                        </td>
+                        <td><?=$order['quantity']?></td>
+                        <td><?=$order['created_at']?></td>
+                    </tr>
+                    <?php endforeach;?>
+
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>

@@ -12,12 +12,28 @@ function tt($value)
 }
 
 
-function select_all($table){
+function select_all($table, $params=[]){
     global $pdo;
     $sql = "SELECT * FROM $table";
+
+    if(!empty($params)){
+        $i=0;
+        foreach($params as $key=>$value){
+            if(!is_numeric($value)){
+                $value = "'".$value."'";
+            }
+            if($i==0){
+                $sql .= " WHERE $key=$value";
+            }else{
+                $sql .= " AND $key=$value";
+            }
+            $i++;
+        }
+    }
+
     $stmt = $pdo->prepare($sql);
     $stmt->execute();
-    return $stmt;
+    return $stmt->fetchAll();
 }
 
 function select_all_filter($table, $filter) {
@@ -110,6 +126,20 @@ function selectSides($pizzaId) {
     $stmt->bindParam(':pizzaId', $pizzaId, PDO::PARAM_INT);
     $stmt->execute();
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
+function select_orders($phone){
+    global $pdo;
+    $sql = "SELECT * 
+        FROM orders AS o
+        JOIN order_items AS oi ON o.id = oi.order_id
+        WHERE o.phone = :phone";
+
+    $stmt = $pdo->prepare($sql);
+    $stmt->bindParam(':phone', $phone, PDO::PARAM_STR);  // Bind the parameter
+    $stmt->execute();
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+
 }
 
 
