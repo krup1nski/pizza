@@ -55,7 +55,7 @@ function select_all_filter($table, $filter) {
 
     $stmt = $pdo->prepare($sql);
     $stmt->execute();
-    return $stmt;
+    return $stmt->fetchAll();
 }
 
 
@@ -141,5 +141,37 @@ function select_orders($phone){
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 }
+
+//Pagination
+function pag($table, $limit, $offset, $sort_by = null)
+{
+    global $pdo;
+
+    // Allowed sorting filters
+    $allowedFilters = [
+        "name" => "ORDER BY name",
+        "asc_price" => "ORDER BY price ASC",
+        "desc_price" => "ORDER BY price DESC"
+    ];
+
+    // Base SQL query
+    $sql = "SELECT * FROM {$table} WHERE publish = 1";
+
+    // Apply sorting if provided
+    if ($sort_by && array_key_exists($sort_by, $allowedFilters)) {
+        $sql .= " " . $allowedFilters[$sort_by];
+    }
+
+    // Add pagination
+    $sql .= " LIMIT :limit OFFSET :offset";
+
+    $query = $pdo->prepare($sql);
+    $query->bindParam(':limit', $limit, PDO::PARAM_INT);
+    $query->bindParam(':offset', $offset, PDO::PARAM_INT);
+    $query->execute();
+
+    return $query->fetchAll(PDO::FETCH_ASSOC);
+}
+
 
 

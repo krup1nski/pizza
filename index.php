@@ -19,40 +19,78 @@
 
 <div class="main">
     <div class="container">
-        <div class="filter">
-            <div class="filter-ttl">
-                Pizza
+        <div id="carouselExample" class="carousel slide mt-3 mb-5">
+            <div class="carousel-inner">
+                <div class="carousel-item active">
+                    <img src="https://slutsk.esh.by/upload/iblock/8fa/30dqccn3chhb48c3ez08e3l6h6mlqqxq.jpg" class="d-block w-100" alt="...">
+                </div>
+                <div class="carousel-item">
+                    <img src="https://slutsk.esh.by/upload/iblock/8fa/30dqccn3chhb48c3ez08e3l6h6mlqqxq.jpg" class="d-block w-100" alt="...">
+                </div>
+                <div class="carousel-item">
+                    <img src="https://slutsk.esh.by/upload/iblock/8fa/30dqccn3chhb48c3ez08e3l6h6mlqqxq.jpg" class="d-block w-100" alt="...">
+                </div>
             </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
+        </div>
+
+        <div class="filter">
             <div class="filter-choose">
-                <form action="index.php" method="post">
-                    <label for="sort_by">Сортировать по:</label>
-                    <select class="form-select" name="sort_by" id="sort_by">
-                        <option value="popularity" <?php if(isset($_POST['sort_by']) && $_POST['sort_by'] == 'popularity'): ?> selected <?php endif; ?> >Популярность</option>
-                        <option value="name" <?php if(isset($_POST['sort_by']) && $_POST['sort_by'] == 'name'): ?> selected <?php endif; ?> >По названию</option>
-                        <option value="desc_price" <?php if(isset($_POST['sort_by']) && $_POST['sort_by'] == 'desc_price'): ?> selected <?php endif; ?> >Цена по убыванию</option>
-                        <option value="asc_price" <?php if(isset($_POST['sort_by']) && $_POST['sort_by'] == 'asc_price'): ?> selected <?php endif; ?> >Цена по возрастанию</option>
+                <form action="index.php" method="GET">
+                    <div class="d-flex justify-content-end align-items-center">
+                    <label for="sort_by">Sort by:</label>
+                    <select class="form-select select-fltr" name="sort_by" id="sort_by">
+                        <option value="popularity" <?php if(isset($_POST['sort_by']) && $_POST['sort_by'] == 'popularity'): ?> selected <?php endif; ?> >Popularity</option>
+                        <option value="name" <?php if(isset($_POST['sort_by']) && $_POST['sort_by'] == 'name'): ?> selected <?php endif; ?> >Name</option>
+                        <option value="desc_price" <?php if(isset($_POST['sort_by']) && $_POST['sort_by'] == 'desc_price'): ?> selected <?php endif; ?> >Price descending</option>
+                        <option value="asc_price" <?php if(isset($_POST['sort_by']) && $_POST['sort_by'] == 'asc_price'): ?> selected <?php endif; ?> >Price ascending</option>
                     </select>
 
                     <button type="submit" class="btn btn-outline-warning" name="send_form_indx">
-                        <i class="fa-solid fa-check"></i> Применить
+                        <i class="fa-solid fa-check"></i>
                     </button>
+                    </div>
                 </form>
-
             </div>
         </div>
         <div class="row">
             <div class="goods col-12 d-flex flex-wrap">
 
                 <?php
-                if (isset($_POST['sort_by'])) {
-                    $all_pizzas = select_all_filter("pizzas", $_POST['sort_by']);
+                // Preserve sorting in URL instead of using POST
+                $sort_by = isset($_GET['sort_by']) ? $_GET['sort_by'] : null;
+
+                // Count all products with sorting
+                if ($sort_by) {
+                    $all_products = select_all_filter("pizzas", $sort_by);
                 } else {
-                    $all_pizzas = select_all("pizzas");
+                    $all_products = select_all('pizzas', ['publish' => 1]);
                 }
+
+                $count = count($all_products);
+
+                // Pagination setup
+                $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+                $limit = 4;
+                $offset = ($page - 1) * $limit;
+                $total_pages = ceil($count / $limit);
+
+                // Fetch paginated products with sorting
+                $all_products = pag('pizzas', $limit, $offset, $sort_by);
                 ?>
 
+
+
+
                 <!--вывод всех товаров из таблицы pizzas-->
-                <?php foreach ($all_pizzas as $pizza): ?>
+                <?php foreach ($all_products as $pizza): ?>
                 <div class="item itemWrapper m-3" data-id="<?=$pizza['id']?>" style="width: 18rem;">
                     <div style="text-align: center;" >
                 <img class="item_img" src="<?=$pizza['img']?>" alt=""></div>
@@ -123,7 +161,7 @@
                     </div>
 
                     <div class="item-choose__incart me-3 mb-3">
-                        <button data-cart type="button" class="btn btn-warning">add</button>
+                        <button data-cart type="button" class="btn btn-orange">add</button>
                     </div>
                     </div>
             </div>
@@ -131,6 +169,43 @@
 
 
         </div>
+        </div>
+
+
+
+        <?php
+        $current_page = max(1, min($total_pages, $page));
+        $range = 2; // Number of pages before and after current
+        $start_page = max(1, $current_page - $range);
+        $end_page = min($total_pages, $current_page + $range);
+
+        // Preserve sorting in URL
+        $sort_by_param = isset($_GET['sort_by']) ? '&sort_by=' . urlencode($_GET['sort_by']) : '';
+        ?>
+        <div class="mt-5 d-flex justify-content-center">
+        <nav aria-label="Page navigation example">
+            <ul class="pagination">
+                <li class="page-item <?= $current_page == 1 ? 'disabled' : '' ?>">
+                    <a class="page-link" href="?page=1<?= $sort_by_param ?>">First</a>
+                </li>
+                <li class="page-item <?= $current_page == 1 ? 'disabled' : '' ?>">
+                    <a class="page-link" href="?page=<?= $current_page - 1 . $sort_by_param ?>">Previous</a>
+                </li>
+
+                <?php for ($i = $start_page; $i <= $end_page; $i++): ?>
+                    <li class="page-item <?= $i == $current_page ? 'active' : '' ?>">
+                        <a class="page-link" href="?page=<?= $i . $sort_by_param ?>"><?= $i ?></a>
+                    </li>
+                <?php endfor; ?>
+
+                <li class="page-item <?= $current_page == $total_pages ? 'disabled' : '' ?>">
+                    <a class="page-link" href="?page=<?= $current_page + 1 . $sort_by_param ?>">Next</a>
+                </li>
+                <li class="page-item <?= $current_page == $total_pages ? 'disabled' : '' ?>">
+                    <a class="page-link" href="?page=<?= $total_pages . $sort_by_param ?>">Last</a>
+                </li>
+            </ul>
+        </nav>
         </div>
     </div>
 </div>

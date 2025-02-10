@@ -11,14 +11,8 @@
             </ul>
 
 
-            <div class="telnubmer">
-                <div class="small">a1 mts life</div>
-                <a href="tel:+123-45-67">123-45-67</a>
-            </div>
-
-
             <div class="text-end">
-                <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample">
+                <button class="btn btn-orange" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample">
                     cart
                 </button>
 
@@ -36,7 +30,7 @@
 
                         <div class="total-price">0</div>
 
-                        <div class="btn-order">
+                        <div class="btn-order btn btn-orange">
                             <a href="order.php">Place an order</a>
                         </div>
 
@@ -47,10 +41,10 @@
             <li class="ms-2 nav-item dropdown" style="list-style-type: none;">
                 <?php if(isset($_SESSION['id'])):?>
                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <?=$_SESSION['name']?><i class="fa fa-user" aria-hidden="true"></i>
+                        <?=$_SESSION['name']?>
                     </a>
                     <ul class="dropdown-menu">
-                        <li><a class="nav-link" href="profile.php">Profile</a></li>
+                        <li><a class="dropdown-item" href="profile.php">Profile</a></li>
                         <?php if($_SESSION['id'] == 1):?>
                             <li><a class="dropdown-item" href="admin/dashboard.php">Admin board</a></li>
                         <?php endif;?>

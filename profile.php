@@ -2,7 +2,6 @@
 
 // Загрузка фото профиля
 if($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["upload_img"])){
-    tt($_FILES);
     if(!empty($_FILES["profile_img"]["name"])){
         $img_name = $_FILES["profile_img"]["name"];
         $filetmpname = $_FILES["profile_img"]["tmp_name"];
@@ -58,24 +57,29 @@ if (isset($message)){
 ?>
 <div class="main">
     <div class="container">
-        <div class="row">
+        <div class="row mt-3">
             <div class="profile_img col-md-4 d-flex flex-column align-items-center">
                 <?php $user = select_one('users', $_SESSION['id']);?>
                 <div class="profile_name h4 text-center"><?=$user['name']?></div>
 
+
                 <?php if(!empty($user['img'])):?>
-                    <img src="img/<?=$user['img']?>" class="rounded-circle img-fluid" alt="Profile Picture">
+                    <img src="img/<?=$user['img']?>" class="profil-pic" alt="Profile Picture">
                 <?php else:?>
-                    <img src="img/profile.jpg" class="rounded-circle img-fluid" alt="Profile Picture">
+                    <img src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png" class="profil-pic" alt="Profile Picture">
                 <?php endif ?>
 
+
                 <form action="profile.php" method="post" enctype="multipart/form-data">
-                    <div class="mb-3">
-                        <label for="formFile" class="form-label">Выберите файл</label>
+                    <div class="d-flex align-items-end">
+                    <div class="load_pic">
+                        <label for="formFile" class="form-label"></label>
                         <input class="form-control" name="profile_img" type="file" id="formFile">
                     </div>
-                    <input type="submit" name="upload_img" value="Upload" class="btn btn-primary">
+                    <input type="submit" name="upload_img" value="Upload" class="btn btn-orange">
+                </div>
                 </form>
+
 
             </div>
             <div class="profile_info col-md-8">
