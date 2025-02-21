@@ -11,6 +11,19 @@ function tt($value)
     echo '</pre>';
 }
 
+function createSlug($title) {
+
+    $title = strtolower($title);
+
+    $replacements = ['@'=> "at", '#' => "hash", '$' => "dollar", '%' => "percentage", '&' => "and", '.' => "dot",
+        '+' => "plus", '-' => "minus", '*' => "multiply", '/' => "devide", '=' => "equal to",
+        '<' => "less than", '<=' => "less than or equal to", '>' => "greater than", '<=' => "greater than or equal to",
+    ];
+
+    $title = strtr($title, $replacements);
+    return $urlKey = preg_replace('#[^0-9a-z]+#i', '-', $title);
+}
+
 
 function select_all($table, $params=[]){
     global $pdo;
@@ -75,7 +88,7 @@ function selectDoughs($pizzaId) {
             FROM 
                 pizzas p
             JOIN 
-                `pizzas-doughs` pd ON p.id = pd.id_pizza
+                `pizzasdoughs` pd ON p.id = pd.id_pizza
             JOIN 
                 doughs d ON pd.id_dough = d.id
             WHERE 
@@ -96,7 +109,7 @@ function selectSizes($pizzaId) {
             FROM 
                 pizzas p
             JOIN 
-                `pizzas-sizes` ps ON p.id = ps.id_pizza
+                `pizzassizes` ps ON p.id = ps.id_pizza
             JOIN 
                 sizes sz ON ps.id_size = sz.id
             WHERE 
@@ -116,7 +129,7 @@ function selectSides($pizzaId) {
             FROM 
                 pizzas p
             JOIN 
-                `pizzas-sides` psd ON p.id = psd.id_pizza
+                `pizzassides` psd ON p.id = psd.id_pizza
             JOIN 
                 sides sd ON psd.id_side = sd.id
             WHERE 
@@ -172,6 +185,54 @@ function pag($table, $limit, $offset, $sort_by = null)
 
     return $query->fetchAll(PDO::FETCH_ASSOC);
 }
+
+function add_to_db($table, $params){
+    global $pdo;
+    $i = 0;
+    $keys = '';
+    $values = '';
+
+    foreach ($params as $key => $value) {
+        if($i === 0){
+            $keys = $key;
+            $values = "'".$value."'";
+        }else{
+            $keys = $keys . ", " . $key;
+            $values = $values . ", " . "'".$value."'";
+        }
+        $i++;
+    }
+    $sql = "INSERT INTO `$table` ($keys) VALUES ($values)";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute();
+}
+
+function delete_product($table, $id){
+    global $pdo;
+
+    // Удаляем все связи перед удалением пиццы
+    $sql = "DELETE FROM pizzasdoughs WHERE id_pizza = :id";
+    $stmt = $pdo->prepare($sql);
+    $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+    $stmt->execute();
+
+    $sql = "DELETE FROM pizzassides WHERE id_pizza = :id";
+    $stmt = $pdo->prepare($sql);
+    $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+    $stmt->execute();
+
+    $sql = "DELETE FROM pizzassizes WHERE id_pizza = :id";
+    $stmt = $pdo->prepare($sql);
+    $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+    $stmt->execute();
+
+    // Теперь можно удалить саму пиццу
+    $sql = "DELETE FROM $table WHERE id = :id";
+    $stmt = $pdo->prepare($sql);
+    $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+    $stmt->execute();
+}
+
 
 
 
