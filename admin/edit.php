@@ -1,13 +1,26 @@
 <?php include "../php/db.php";
 
-
 if($_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET["id"])){
-    $id = $_GET["id"];
+    $id = intval($_GET["id"]);
     $product = select_all("pizzas", ['id'=>$id]);
 }
 
+if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET["del_id"])) {
+    $id = intval($_GET["del_id"]);
+
+    global $pdo;
+    $sql = "UPDATE pizzas SET img = NULL WHERE id = :id";
+    $stmt = $pdo->prepare($sql);
+    $stmt->bindParam(":id", $id, PDO::PARAM_INT);
+    $stmt->execute();
+
+    header("Location: edit.php?id=$id");
+    exit();
+}
+
+
 if($_SERVER['REQUEST_METHOD']=="POST" && isset($_POST['send_form_edit'])){
-    $id = $_POST['id'];
+    $id = intval($_POST['id']);
     $name = filter_var($_POST['name'], FILTER_SANITIZE_STRING);
     $slug = filter_var($_POST['slug'], FILTER_SANITIZE_STRING);
     $description = filter_var($_POST['description'], FILTER_SANITIZE_STRING);
@@ -15,10 +28,28 @@ if($_SERVER['REQUEST_METHOD']=="POST" && isset($_POST['send_form_edit'])){
     $content = filter_var($_POST['content'], FILTER_SANITIZE_STRING);
     $publish = isset($_POST['publish']) ? $_POST['publish'] : 0;
 
+    if(!empty($_FILES["profile_img"]["name"])){
+        $img_name = $_FILES["profile_img"]["name"];
+        $filetmpname = $_FILES["profile_img"]["tmp_name"];
+        $filetype = $_FILES["profile_img"]["type"];
+        $destination = "../img/pizza/".$img_name;
+
+        // проверяем произошла ли загрузка или нет
+        $result = move_uploaded_file($filetmpname, $destination);
+        if($result){
+            $_POST['profile_img'] = $img_name;
+        }else{
+            $message = "Sorry, there was an error uploading your file.";
+        }
+    }else{
+        $message = "No file was uploaded.";
+    }
+
     $params=[
             'name'=>$name,
             'slug'=>$slug,
             'description'=>$description,
+            'img'=>"img/pizza/".$img_name,
             'price'=>$price,
             'content'=>$content,
             'publish'=>$publish
@@ -117,6 +148,15 @@ if($_SERVER['REQUEST_METHOD']=="POST" && isset($_POST['send_form_edit'])){
             <div class="mb-3">
                 <label for="InputDescription" class="form-label">Description</label>
                 <input type="text" class="form-control" value="<?=$product[0]['description']?>" name="description" id="InputDescription">
+            </div>
+
+            <div class="pic_product">
+                <a href="edit.php?del_id=<?=$product[0]['id']?>"
+                   onclick="return confirm('Are you sure to delete this pic?')"
+                   class="btn btn-danger">
+                    <i class="fa-solid fa-trash"></i>
+                </a>
+                <img src="<?=BASE_URL?><?=$product[0]['img']?>" alt="">
             </div>
 
             <div class="load_pic">

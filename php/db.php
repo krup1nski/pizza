@@ -2,6 +2,7 @@
 
 session_start();
 require "connection.php";
+define("BASE_URL", "/pizza/");
 
 // для удобного чтения
 function tt($value)

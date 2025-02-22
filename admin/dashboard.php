@@ -28,6 +28,10 @@ if($_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET["del_id"])){
 <div class="main">
     <div class="container">
         <?php $products = select_all('pizzas')?>
+        <div class="mt-3 mb-3">
+            <a href="create.php"><button type="submit" class="btn btn-success">CREATE</button></a>
+        </div>
+
         <table class="table">
             <thead>
             <tr>

@@ -2,7 +2,9 @@
     <div class="container">
         <div class="d-flex header">
             <div class="logo">
-                <a href="index.php">LOGO</a></div>
+                <a href="<?=BASE_URL?>index.php"><img src="<?=BASE_URL?>img/pizza-logo.png" alt=""></a>
+            </div>
+
 
             <ul class="nav flex-grow-1">
                 <li class="white"><a href="">pizza</a></li>
@@ -46,7 +48,7 @@
                     <ul class="dropdown-menu">
                         <li><a class="dropdown-item" href="profile.php">Profile</a></li>
                         <?php if($_SESSION['id'] == 1):?>
-                            <li><a class="dropdown-item" href="admin/dashboard.php">Admin board</a></li>
+                            <li><a class="dropdown-item" href="<?=BASE_URL?>admin/dashboard.php">Admin board</a></li>
                         <?php endif;?>
                         <li><a class="dropdown-item" href="logout.php">Logout</a></li>
                     </ul>
@@ -57,8 +59,8 @@
                     </a>
 
                     <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="login.php">Login</a></li>
-                        <li><a class="dropdown-item" href="registration.php">Registration</a></li>
+                        <li><a class="dropdown-item" href="<?=BASE_URL?>login.php">Login</a></li>
+                        <li><a class="dropdown-item" href="<?=BASE_URL?>registration.php">Registration</a></li>
                     </ul>
                 <?php endif;?>
             </li>

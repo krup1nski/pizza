@@ -1,6 +1,5 @@
 <?php include "../php/db.php";
 
-tt($_POST);
 if($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["send_form_create"])){
     $name = filter_var($_POST['name'], FILTER_SANITIZE_STRING);
     $slug = createSlug($name);
@@ -101,7 +100,9 @@ if($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["send_form_create"])){
 
 <div class="main">
     <div class="container">
-        <div class="mt-3 mb-3">Create</div>
+        <div class="mt-3 mb-3">
+            <h3>Create</h3>
+            </div>
         <form action="create.php" method="post" enctype="multipart/form-data">
             <div class="mb-3">
                 <label for="InputName" class="form-label">Name</label>
