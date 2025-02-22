@@ -5,7 +5,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["send_form_create"])){
     $name = filter_var($_POST['name'], FILTER_SANITIZE_STRING);
     $slug = createSlug($name);
     $description = filter_var($_POST['description'], FILTER_SANITIZE_STRING);
-    $price = filter_var($_POST['price'], FILTER_SANITIZE_NUMBER_FLOAT);
+    $price = $_POST['price'];
     $content = filter_var($_POST['content'], FILTER_SANITIZE_STRING);
     $publish = isset($_POST['publish']) ? $_POST['publish'] : 0;
 

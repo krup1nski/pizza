@@ -1,12 +1,87 @@
 <?php include "../php/db.php";
 
-tt($_POST);
-tt($_GET);
 
 if($_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET["id"])){
     $id = $_GET["id"];
     $product = select_all("pizzas", ['id'=>$id]);
 }
+
+if($_SERVER['REQUEST_METHOD']=="POST" && isset($_POST['send_form_edit'])){
+    $id = $_POST['id'];
+    $name = filter_var($_POST['name'], FILTER_SANITIZE_STRING);
+    $slug = filter_var($_POST['slug'], FILTER_SANITIZE_STRING);
+    $description = filter_var($_POST['description'], FILTER_SANITIZE_STRING);
+    $price = $_POST['price'];
+    $content = filter_var($_POST['content'], FILTER_SANITIZE_STRING);
+    $publish = isset($_POST['publish']) ? $_POST['publish'] : 0;
+
+    $params=[
+            'name'=>$name,
+            'slug'=>$slug,
+            'description'=>$description,
+            'price'=>$price,
+            'content'=>$content,
+            'publish'=>$publish
+    ];
+    update("pizzas",$id, $params);
+
+
+    global $pdo;
+////////////////////////////////////////////////////////////////////////////////
+    $sizes = select_all('sizes');
+
+// Удаляем все старые записи для этой пиццы
+    $deleteStmt = $pdo->prepare("DELETE FROM pizzassizes WHERE id_pizza = ?");
+    $deleteStmt->execute([$id]);
+
+// Подготовленный запрос на вставку новых размеров
+    $insertStmt = $pdo->prepare("INSERT INTO pizzassizes (id_pizza, id_size) VALUES (?, ?)");
+
+// Перебираем все размеры и вставляем только отмеченные чекбоксы
+    foreach ($sizes as $size) {
+        $size_id = (int) $size['id'];
+
+        if (!empty($_POST["size-".$size['name']])) {
+            $insertStmt->execute([$id, $size_id]);
+        }
+    }
+
+////////////////////////////////////////////////////////////////////////////////
+    $sides = select_all('sides');
+
+    $deleteStmt = $pdo->prepare("DELETE FROM pizzassides WHERE id_pizza = ?");
+    $deleteStmt->execute([$id]);
+
+    $insertStmt = $pdo->prepare("INSERT INTO pizzassides (id_pizza, id_side) VALUES (?, ?)");
+
+    foreach ($sides as $side) {
+        $side_id = (int) $side['id'];
+
+        if (!empty($_POST["side-".$side['name']])) {
+            $insertStmt->execute([$id, $side_id]);
+        }
+    }
+    ////////////////////////////////////////////////////////////////////////////////
+    $doughs = select_all('doughs');
+
+    $deleteStmt = $pdo->prepare("DELETE FROM pizzasdoughs WHERE id_pizza = ?");
+    $deleteStmt->execute([$id]);
+
+    $insertStmt = $pdo->prepare("INSERT INTO pizzasdoughs (id_pizza, id_dough) VALUES (?, ?)");
+
+    foreach ($doughs as $dough) {
+        $dough_id = (int) $dough['id'];
+
+        if (!empty($_POST["dough-".$dough['name']])) {
+            $insertStmt->execute([$id, $dough_id]);
+        }
+    }
+
+    header("Location: edit.php?id=$id");
+}
+
+
+
 
 ?>
 <!doctype html>
@@ -29,15 +104,15 @@ if($_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET["id"])){
 <div class="main">
     <div class="container">
         <div class="mt-3 mb-3">EDIT</div>
-        <?php tt($product)?>
-        <form action="create.php" method="post" enctype="multipart/form-data">
+        <form action="edit.php" method="post" enctype="multipart/form-data">
+            <input type="hidden" name="id" value="<?=$product[0]['id']?>">
             <div class="mb-3">
                 <label for="InputName" class="form-label">Name</label>
                 <input type="text" class="form-control" value="<?=$product[0]['name']?>" name="name" id="InputName">
             </div>
             <div class="mb-3">
                 <label for="InputSlug" class="form-label">Slug</label>
-                <input type="text" class="form-control" value="<?=$product[0]['slug']?>" name="slus" id="InputSlug">
+                <input type="text" class="form-control" value="<?=$product[0]['slug']?>" name="slug" id="InputSlug">
             </div>
             <div class="mb-3">
                 <label for="InputDescription" class="form-label">Description</label>
@@ -77,10 +152,13 @@ if($_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET["id"])){
 
                 <?php foreach ($sizes as $size): ?>
                     <div class="form-check form-check-inline">
+                        <!-- Скрытое поле для отправки 0, если чекбокс не отмечен -->
+                        <input type="hidden" name="size-<?= $size['name'] ?>" value="0">
+
                         <input class="form-check-input"
                                type="checkbox"
                                id="size-<?=$size['id']?>"
-                               name="size-<?=$size['id']?>"
+                               name="size-<?=$size['name']?>"
                                value="<?=$size['id']?>"
                             <?= in_array($size['id'], $selected_sizes) ? 'checked' : '' ?>>
                         <label class="form-check-label" for="size-<?=$size['id']?>"><?=$size['name']?></label>
@@ -99,10 +177,12 @@ if($_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET["id"])){
 
                 <?php foreach($sides as $side): ?>
                     <div class="form-check form-check-inline">
+                        <!-- Скрытое поле для отправки 0, если чекбокс не отмечен -->
+                        <input type="hidden" name="side-<?= $side['name'] ?>" value="0">
                         <input class="form-check-input"
                                type="checkbox"
                                id="size-<?=$side['id']?>"
-                               name="side-<?=$side['id']?>"
+                               name="side-<?=$side['name']?>"
                                value="<?=$side['id']?>"
                             <?= in_array($side['id'], $selected_sides) ? 'checked' : '' ?>>
                         <label class="form-check-label" for="inlineCheckbox1"><?=$side['name']?></label>
@@ -118,20 +198,23 @@ if($_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET["id"])){
                 // Создаем массив с уже выбранными бортиками
                 $selected_doughs = array_column($product_doughs, 'id_dough');
                 ?>
-                <?php foreach($doughs as $dough): ?>
+                <?php foreach ($doughs as $dough): ?>
                     <div class="form-check form-check-inline">
+                        <!-- Скрытое поле для отправки 0, если чекбокс не отмечен -->
+                        <input type="hidden" name="dough-<?= $dough['name'] ?>" value="0">
+
                         <input class="form-check-input"
                                type="checkbox"
-                               id="size-<?=$dough['id']?>"
-                               name="dough-<?=$dough['id']?>"
+                               id="dough-<?=$dough['id']?>"
+                               name="dough-<?=$dough['name']?>"
                                value="<?=$dough['id']?>"
                             <?= in_array($dough['id'], $selected_doughs) ? 'checked' : '' ?>>
-                        <label class="form-check-label" for="inlineCheckbox1"><?=$dough['name']?></label>
+                        <label class="form-check-label" for="dough-<?=$dough['id']?>"><?=$dough['name']?></label>
                     </div>
                 <?php endforeach; ?>
             </div>
 
-            <button type="submit" class="btn btn-outline-warning" name="send_form_edit">
+            <button type="submit" class="btn btn-outline-warning" name="send_form_edit">Apply</button>
         </form>
     </div>
 </div>

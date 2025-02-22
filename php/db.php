@@ -234,5 +234,28 @@ function delete_product($table, $id){
 }
 
 
+//Обновление строки в таблице
+// UPDATE user SET admin ='0', firstname ='Red' WHERE id=3
+function update($table, $id, $params){
+    global $pdo;
+
+    $columns = [];
+    foreach ($params as $key => $value) {
+        $columns[] = "$key = :$key";
+    }
+
+    $columns_str = implode(', ', $columns);
+    $sql = "UPDATE $table SET $columns_str WHERE id = :id";
+    $stmt = $pdo->prepare($sql);
+
+    // Bind the parameters
+    foreach ($params as $key => &$value) {
+        $stmt->bindParam(":$key", $value);
+    }
+    $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+
+    $stmt->execute();
+}
+
 
 
