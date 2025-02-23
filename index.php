@@ -22,13 +22,10 @@
         <div id="carouselExample" class="carousel slide mt-3 mb-5">
             <div class="carousel-inner">
                 <div class="carousel-item active">
-                    <img src="https://slutsk.esh.by/upload/iblock/8fa/30dqccn3chhb48c3ez08e3l6h6mlqqxq.jpg" class="d-block w-100" alt="...">
+                    <img src="<?=BASE_URL?>img/slider1.png" class="d-block w-100" alt="...">
                 </div>
                 <div class="carousel-item">
-                    <img src="https://slutsk.esh.by/upload/iblock/8fa/30dqccn3chhb48c3ez08e3l6h6mlqqxq.jpg" class="d-block w-100" alt="...">
-                </div>
-                <div class="carousel-item">
-                    <img src="https://slutsk.esh.by/upload/iblock/8fa/30dqccn3chhb48c3ez08e3l6h6mlqqxq.jpg" class="d-block w-100" alt="...">
+                    <img src="<?=BASE_URL?>img/slider2.png" class="d-block w-100" alt="...">
                 </div>
             </div>
             <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
@@ -93,7 +90,11 @@
                 <?php foreach ($all_products as $pizza): ?>
                 <div class="item itemWrapper m-3" data-id="<?=$pizza['id']?>" style="width: 18rem;">
                     <div style="text-align: center;" >
-                <img class="item_img" src="<?=$pizza['img']?>" alt=""></div>
+                        <?php if(!empty($pizza['img'])): ?>
+                            <img class="item_img" src="<?=$pizza['img']?>" alt=""></div>
+                        <?php else:?>
+                            <img class="item_img" src="<?=BASE_URL?>img/nophoto.png" alt=""></div>
+                        <?php endif;?>
                 <h4 style="text-align: center;" class="item_title">
                     <a href="view_product.php?id=<?=$pizza['id']?>"><?=$pizza['name']?></a>
                 </h4>

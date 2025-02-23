@@ -134,7 +134,7 @@ if($_SERVER['REQUEST_METHOD']=="POST" && isset($_POST['send_form_edit'])){
 
 <div class="main">
     <div class="container">
-        <div class="mt-3 mb-3">EDIT</div>
+        <div class="mt-3 mb-3"><h3>EDIT</h3></div>
         <form action="edit.php" method="post" enctype="multipart/form-data">
             <input type="hidden" name="id" value="<?=$product[0]['id']?>">
             <div class="mb-3">
@@ -151,12 +151,17 @@ if($_SERVER['REQUEST_METHOD']=="POST" && isset($_POST['send_form_edit'])){
             </div>
 
             <div class="pic_product">
+
+                <?php if(!empty($product[0]['img'])): ?>
                 <a href="edit.php?del_id=<?=$product[0]['id']?>"
                    onclick="return confirm('Are you sure to delete this pic?')"
                    class="btn btn-danger">
                     <i class="fa-solid fa-trash"></i>
                 </a>
-                <img src="<?=BASE_URL?><?=$product[0]['img']?>" alt="">
+                <img class="item_img" src="<?=BASE_URL?><?=$product[0]['img']?>" alt=""></div>
+            <?php else:?>
+            <img class="item_img" src="<?=BASE_URL?>img/nophoto.png" alt="">
+    <?php endif;?>
             </div>
 
             <div class="load_pic">

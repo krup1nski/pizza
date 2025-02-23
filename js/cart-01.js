@@ -243,7 +243,7 @@ document.getElementById("order-form").addEventListener("submit", function (e) {
         method: "POST",
         body: formData,
     })
-        .then(response => response.json()) // Убедитесь, что парсите JSON
+        .then(response => response.json())
         .then(data => {
             if (data.success) {
                 alert("Заказ успешно оформлен!");
